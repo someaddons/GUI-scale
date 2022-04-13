@@ -58,6 +58,9 @@ public class ClientEventHandler
                                        + " The mod still works, but you'll need to manually adjust the config to get different UI scalings as the button could not be added.");
         }
     }
+
+    static int oldScale = -1;
+
     @SubscribeEvent
     public static void on(ScreenOpenEvent event)
     {
@@ -73,10 +76,23 @@ public class ClientEventHandler
               .setGuiScale(ScreenScale.config.getCommonConfig().menuScale.get() != 0
                              ? ScreenScale.config.getCommonConfig().menuScale.get()
                              : Minecraft.getInstance().getWindow().calculateScale(0, Minecraft.getInstance().isEnforceUnicode()));
+            if (oldScale == -1)
+            {
+                oldScale = Minecraft.getInstance().options.guiScale;
+                Minecraft.getInstance().options.guiScale = ScreenScale.config.getCommonConfig().menuScale.get();
+            }
         }
 
         if (event.getScreen() == null)
         {
+            if (oldScale != -1)
+            {
+                if (Minecraft.getInstance().options.guiScale == ScreenScale.config.getCommonConfig().menuScale.get())
+                {
+                    Minecraft.getInstance().options.guiScale = oldScale;
+                }
+                oldScale = -1;
+            }
             Minecraft.getInstance().resizeDisplay();
         }
     }

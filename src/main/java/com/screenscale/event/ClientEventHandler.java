@@ -59,7 +59,7 @@ public class ClientEventHandler
         }
     }
 
-    static int oldScale = -1;
+    public static int oldScale = -1;
 
     @SubscribeEvent
     public static void on(ScreenOpenEvent event)

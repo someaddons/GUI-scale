@@ -94,13 +94,6 @@ mixin {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}" //21
 
-    implementation fg.deobf("curse.maven:minecolonies-245506:3750212")
-    implementation fg.deobf("curse.maven:structurize-298744:3745316")
-    implementation fg.deobf("curse.maven:multipiston-303278:3672032")
-    implementation fg.deobf("curse.maven:blocui-522992:3669806")
-    implementation fg.deobf("curse.maven:blocuis-527361:3671007")
-
-
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 }
 

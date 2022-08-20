@@ -1,98 +1,86 @@
 package com.screenscale.event;
 
 import com.screenscale.ScreenScale;
-import net.minecraft.client.CycleOption;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Option;
-import net.minecraft.client.gui.screens.VideoSettingsScreen;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraftforge.client.event.ScreenOpenEvent;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Tuple;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class ClientEventHandler
 {
-    public static final CycleOption MENU_SCALE = CycleOption.create("Menu Scale", () -> {
-        return IntStream.rangeClosed(0, Minecraft.getInstance().getWindow().calculateScale(0, Minecraft.getInstance().isEnforceUnicode())).boxed().collect(Collectors.toList());
-    }, (integer) -> {
+    public static final OptionInstance<Integer> MENU_SCALE = new OptionInstance<>("Menu Scale", OptionInstance.noTooltip(),
+      (component, value) ->
+      {
+          return value == 0 ? Component.translatable("options.guiScale.auto") : Component.literal(Integer.toString(value));
+      },
+      new OptionInstance.ClampingLazyMaxIntRange(0, () ->
+      {
+          Minecraft minecraft = Minecraft.getInstance();
+          return !minecraft.isRunning() ? 2147483646 : minecraft.getWindow().calculateScale(0, minecraft.isEnforceUnicode());
+      }),
+      ScreenScale.config.getCommonConfig().menuScale.get(),
+      (value) ->
+      {
+          int guiScale = ScreenScale.config.getCommonConfig().menuScale.get();
+          guiScale = value;
+          ScreenScale.config.getCommonConfig().menuScale.set(guiScale);
 
-        if (integer == 0)
-        {
-            return new TextComponent("Auto");
-        }
+          Minecraft.getInstance()
+            .getWindow()
+            .setGuiScale(guiScale != 0 ? guiScale : Minecraft.getInstance().getWindow().calculateScale(0, Minecraft.getInstance().isEnforceUnicode()));
+          if (Minecraft.getInstance().screen != null)
+          {
+              Minecraft.getInstance().screen.resize(Minecraft.getInstance(),
+                Minecraft.getInstance().getWindow().getGuiScaledWidth(),
+                Minecraft.getInstance().getWindow().getGuiScaledHeight());
+          }
+      });
 
-        return new TextComponent("" + integer);
-    }, (options) -> {
-        return ScreenScale.config.getCommonConfig().menuScale.get();
-    }, (options, option, value) -> {
-        int guiScale = ScreenScale.config.getCommonConfig().menuScale.get();
-        guiScale = value;
-        ScreenScale.config.getCommonConfig().menuScale.set(guiScale);
-
-        Minecraft.getInstance()
-          .getWindow()
-          .setGuiScale(guiScale != 0 ? guiScale : Minecraft.getInstance().getWindow().calculateScale(0, Minecraft.getInstance().isEnforceUnicode()));
-        if (Minecraft.getInstance().screen != null)
-        {
-            Minecraft.getInstance().screen.resize(Minecraft.getInstance(),
-              Minecraft.getInstance().getWindow().getGuiScaledWidth(),
-              Minecraft.getInstance().getWindow().getGuiScaledHeight());
-        }
-    });
-    static
-    {
-        try
-        {
-            final List<Option> options = new ArrayList<>(Arrays.asList(VideoSettingsScreen.OPTIONS));
-            options.add(options.indexOf(Option.GUI_SCALE) + 1, MENU_SCALE);
-            VideoSettingsScreen.OPTIONS = options.toArray(new Option[0]);
-        }
-        catch (Throwable e)
-        {
-            ScreenScale.LOGGER.error("Error trying to add an option Button to video settings, likely optifine is present which removes vanilla functionality required."
-                                       + " The mod still works, but you'll need to manually adjust the config to get different UI scalings as the button could not be added.");
-        }
-    }
-
-    public static int oldScale = -1;
+    private static List<Tuple<Integer, Integer>> changes = new ArrayList<>();
 
     @SubscribeEvent
-    public static void on(ScreenOpenEvent event)
+    public static void on(ScreenEvent.Opening event)
     {
         if (event.isCanceled())
         {
             return;
         }
 
-        if (Minecraft.getInstance().screen == null && event.getScreen() != null)
+        if (event.getCurrentScreen() == null && event.getNewScreen() != null)
         {
+            changes.add(new Tuple<>(Minecraft.getInstance().options.guiScale().get(), ScreenScale.config.getCommonConfig().menuScale.get()));
+            //ScreenScale.LOGGER.info("Changing from "+Minecraft.getInstance().options.guiScale().get()+" to "+ScreenScale.config.getCommonConfig().menuScale.get());
+
             Minecraft.getInstance()
               .getWindow()
               .setGuiScale(ScreenScale.config.getCommonConfig().menuScale.get() != 0
                              ? ScreenScale.config.getCommonConfig().menuScale.get()
                              : Minecraft.getInstance().getWindow().calculateScale(0, Minecraft.getInstance().isEnforceUnicode()));
-            if (oldScale == -1)
-            {
-                oldScale = Minecraft.getInstance().options.guiScale;
-                Minecraft.getInstance().options.guiScale = ScreenScale.config.getCommonConfig().menuScale.get();
-            }
-        }
 
-        if (event.getScreen() == null)
+            Minecraft.getInstance().options.guiScale().set(ScreenScale.config.getCommonConfig().menuScale.get());
+            Minecraft.getInstance().resizeDisplay();
+        }
+    }
+
+    public static void onClose()
+    {
+        if (!changes.isEmpty())
         {
-            if (oldScale != -1)
+            for (int i = changes.size() - 1; i >= 0; i--)
             {
-                if (Minecraft.getInstance().options.guiScale == ScreenScale.config.getCommonConfig().menuScale.get())
+                final Tuple<Integer, Integer> change = changes.get(i);
+                if (Minecraft.getInstance().options.guiScale().get().equals(change.getB()))
                 {
-                    Minecraft.getInstance().options.guiScale = oldScale;
+                    //ScreenScale.LOGGER.info("Restoring from " + change.getB() + " to " + change.getA());
+                    Minecraft.getInstance().options.guiScale().set(change.getA());
                 }
-                oldScale = -1;
             }
+            changes.clear();
             Minecraft.getInstance().resizeDisplay();
         }
     }

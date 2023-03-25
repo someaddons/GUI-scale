@@ -17,7 +17,7 @@ public class ClientEventHandler
       {
           Minecraft minecraft = Minecraft.getInstance();
           return !minecraft.isRunning() ? 2147483646 : minecraft.getWindow().calculateScale(0, minecraft.isEnforceUnicode());
-      }),
+      }, Integer.MAX_VALUE),
       ScreenScale.config.getCommonConfig().menuScale.get(),
       (value) ->
       {

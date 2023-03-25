@@ -8,7 +8,7 @@ import me.jellysquid.mods.sodium.client.gui.options.control.ControlValueFormatte
 import me.jellysquid.mods.sodium.client.gui.options.control.SliderControl;
 import me.jellysquid.mods.sodium.client.gui.options.storage.MinecraftOptionsStorage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,8 +27,8 @@ public class SodiumGameOptionsMixin
     {
         instance.add(
           OptionImpl.createBuilder(Integer.TYPE, vanillaOpts)
-            .setName(new TextComponent("Menu Scale"))
-            .setTooltip(new TextComponent("Set the scale of inventory UIs"))
+            .setName(Component.literal("Menu Scale"))
+            .setTooltip(Component.literal("Set the scale of inventory UIs"))
             .setControl(option -> new SliderControl(option, 0, 4, 1, ControlValueFormatter.guiScale()))
             .setBinding((opts, guiScale) -> {
                 ScreenScale.config.getCommonConfig().menuScale = guiScale;

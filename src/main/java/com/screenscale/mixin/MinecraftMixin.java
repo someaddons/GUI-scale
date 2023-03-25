@@ -11,12 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Minecraft.class)
 public class MinecraftMixin
 {
-    @Inject(method = "setScreen", at = @At("RETURN"))
-    public void onCloseScreen(final Screen newscreen, final CallbackInfo ci)
+    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;"))
+    public void onSetScreen(final Screen screen, final CallbackInfo ci)
     {
-        if (newscreen == null)
-        {
-            ClientEventHandler.onClose();
-        }
+        ClientEventHandler.onScreenSet(screen);
     }
 }

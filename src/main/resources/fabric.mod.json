@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "screenscale",
+  "id": "guiscale",
   "version": "${version}",
   "name": "GUI scale Mod",
   "description": "GUI Scale adds a seperate UI scale slider for menus",
@@ -22,13 +22,13 @@
     ]
   },
   "mixins": [
-    "screenscale.mixins.json"
+    "guiscale.mixins.json"
   ],
-
+  "accessWidener": "guiscale.accessWidener",
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
-    "minecraft": "1.19.x",
+    "minecraft": "1.20.x",
     "java": ">=17"
   },
   "suggests": {

@@ -9,7 +9,7 @@ import java.util.Random;
 // The value here should match an entry in the META-INF/mods.toml file
 public class ScreenScale implements ModInitializer
 {
-    public static final String                               MODID        = "screenscale";
+    public static final String                               MODID        = "guiscale";
     public static final Logger                               LOGGER       = LogManager.getLogger();
     public static       com.ScreenScale.config.Configuration config       = new com.ScreenScale.config.Configuration();
     public static       Random                               rand         = new Random();

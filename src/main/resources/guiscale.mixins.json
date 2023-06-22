@@ -2,7 +2,7 @@
   "required": false,
   "package": "com.screenscale.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "screenscale.refmap.json",
+  "refmap": "guiscale.refmap.json",
   "mixins": [
   ],
   "client": [

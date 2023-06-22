@@ -17,7 +17,7 @@ public class ClientEventHandler
       {
           Minecraft minecraft = Minecraft.getInstance();
           return !minecraft.isRunning() ? 2147483646 : minecraft.getWindow().calculateScale(0, minecraft.isEnforceUnicode());
-      }, Integer.MAX_VALUE),
+      },8),
       ScreenScale.config.getCommonConfig().menuScale.get(),
       (value) ->
       {
@@ -48,7 +48,15 @@ public class ClientEventHandler
 
         if (screen == null)
         {
-            Minecraft.getInstance().resizeDisplay();
+            try
+            {
+                Minecraft.getInstance().resizeDisplay();
+            }
+            catch (Throwable t
+            )
+            {
+                ScreenScale.LOGGER.warn("Error on resizing:"+Minecraft.getInstance().screen, t);
+            }
         }
     }
 }

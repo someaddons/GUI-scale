@@ -22,7 +22,7 @@ import static com.screenscale.ScreenScale.MODID;
 @Mod(MODID)
 public class ScreenScale
 {
-    public static final String        MODID  = "screenscale";
+    public static final String        MODID  = "guiscale";
     public static final Logger        LOGGER = LogManager.getLogger();
     public static       Configuration config = new Configuration();
     public static       Random        rand   = new Random();

@@ -1,9 +1,9 @@
 package com.screenscale.config;
 
+import com.cupboard.config.ICommonConfig;
 import com.google.gson.JsonObject;
-import com.screenscale.ScreenScale;
 
-public class CommonConfiguration
+public class CommonConfiguration implements ICommonConfig
 {
     public int menuScale = 0;
 
@@ -26,19 +26,6 @@ public class CommonConfiguration
 
     public void deserialize(JsonObject data)
     {
-        if (data == null)
-        {
-            ScreenScale.LOGGER.error("Config file was empty!");
-            return;
-        }
-
-        try
-        {
-            menuScale = data.get("menuScale").getAsJsonObject().get("menuScale").getAsInt();
-        }
-        catch (Exception e)
-        {
-            ScreenScale.LOGGER.error("Could not parse config file", e);
-        }
+        menuScale = data.get("menuScale").getAsJsonObject().get("menuScale").getAsInt();
     }
 }

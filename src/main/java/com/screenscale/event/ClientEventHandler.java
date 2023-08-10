@@ -23,6 +23,7 @@ public class ClientEventHandler
       {
           int guiScale = value;
           ScreenScale.config.getCommonConfig().menuScale = guiScale;
+          ScreenScale.config.save();
 
           Minecraft.getInstance()
             .getWindow()

@@ -1,21 +1,31 @@
 package com.screenscale.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import com.cupboard.config.ICommonConfig;
+import com.google.gson.JsonObject;
 
-public class CommonConfiguration
+public class CommonConfiguration implements ICommonConfig
 {
-    public final ForgeConfigSpec                      ForgeConfigSpecBuilder;
-    public final ForgeConfigSpec.ConfigValue<Integer> menuScale;
+    public int menuScale = 0;
 
-    protected CommonConfiguration(final ForgeConfigSpec.Builder builder)
+    public CommonConfiguration()
     {
-        builder.push("Config category");
 
-        builder.comment("Sets the UI scale of menus/screens. 0 is Auto: default:0");
-        menuScale = builder.defineInRange("menuScale", 0,0,8);
+    }
 
-        // Escapes the current category level
-        builder.pop();
-        ForgeConfigSpecBuilder = builder.build();
+    public JsonObject serialize()
+    {
+        final JsonObject root = new JsonObject();
+
+        final JsonObject entry = new JsonObject();
+        entry.addProperty("desc:", "UI scale of menus, default = 0(Auto)");
+        entry.addProperty("menuScale", menuScale);
+        root.add("menuScale", entry);
+
+        return root;
+    }
+
+    public void deserialize(JsonObject data)
+    {
+        menuScale = data.get("menuScale").getAsJsonObject().get("menuScale").getAsInt();
     }
 }

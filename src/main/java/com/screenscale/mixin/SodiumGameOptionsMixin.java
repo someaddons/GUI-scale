@@ -31,8 +31,8 @@ public class SodiumGameOptionsMixin
             .setTooltip(Component.literal("Set the scale of inventory UIs"))
             .setControl(option -> new SliderControl(option, 0, 4, 1, ControlValueFormatter.guiScale()))
             .setBinding((opts, guiScale) -> {
-                ScreenScale.config.getCommonConfig().menuScale.set(guiScale);
-
+                ScreenScale.config.getCommonConfig().menuScale = guiScale;
+                ScreenScale.config.save();
                 Minecraft.getInstance()
                   .getWindow()
                   .setGuiScale(guiScale != 0 ? guiScale : Minecraft.getInstance().getWindow().calculateScale(0, Minecraft.getInstance().isEnforceUnicode()));
@@ -42,7 +42,7 @@ public class SodiumGameOptionsMixin
                       Minecraft.getInstance().getWindow().getGuiScaledWidth(),
                       Minecraft.getInstance().getWindow().getGuiScaledHeight());
                 }
-            }, opts -> ScreenScale.config.getCommonConfig().menuScale.get())
+            }, opts -> ScreenScale.config.getCommonConfig().menuScale)
             .build()
         );
         return instance.build();

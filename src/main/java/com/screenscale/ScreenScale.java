@@ -1,6 +1,7 @@
 package com.screenscale;
 
-import com.screenscale.config.Configuration;
+import com.cupboard.config.CupboardConfig;
+import com.screenscale.config.CommonConfiguration;
 import com.screenscale.event.ClientEventHandler;
 import com.screenscale.event.EventHandler;
 import com.screenscale.event.ModEventHandler;
@@ -22,10 +23,10 @@ import static com.screenscale.ScreenScale.MODID;
 @Mod(MODID)
 public class ScreenScale
 {
-    public static final String        MODID  = "guiscale";
-    public static final Logger        LOGGER = LogManager.getLogger();
-    public static       Configuration config = new Configuration();
-    public static       Random        rand   = new Random();
+    public static final String                              MODID  = "guiscale";
+    public static final Logger                              LOGGER = LogManager.getLogger();
+    public static       CupboardConfig<CommonConfiguration> config = new CupboardConfig<>(MODID, new CommonConfiguration());
+    public static       Random                              rand   = new Random();
 
     public ScreenScale()
     {

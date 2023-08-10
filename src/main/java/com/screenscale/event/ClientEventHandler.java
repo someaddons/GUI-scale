@@ -18,11 +18,12 @@ public class ClientEventHandler
           Minecraft minecraft = Minecraft.getInstance();
           return !minecraft.isRunning() ? 2147483646 : minecraft.getWindow().calculateScale(0, minecraft.isEnforceUnicode());
       },8),
-      ScreenScale.config.getCommonConfig().menuScale.get(),
+      ScreenScale.config.getCommonConfig().menuScale,
       (value) ->
       {
           int guiScale = value;
-          ScreenScale.config.getCommonConfig().menuScale.set(guiScale);
+          ScreenScale.config.getCommonConfig().menuScale = guiScale;
+          ScreenScale.config.save();
 
           Minecraft.getInstance()
             .getWindow()
@@ -41,8 +42,8 @@ public class ClientEventHandler
         {
             Minecraft.getInstance()
               .getWindow()
-              .setGuiScale(ScreenScale.config.getCommonConfig().menuScale.get() != 0
-                             ? ScreenScale.config.getCommonConfig().menuScale.get()
+              .setGuiScale(ScreenScale.config.getCommonConfig().menuScale != 0
+                             ? ScreenScale.config.getCommonConfig().menuScale
                              : Minecraft.getInstance().getWindow().calculateScale(0, Minecraft.getInstance().isEnforceUnicode()));
         }
 
